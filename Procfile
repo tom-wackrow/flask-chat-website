@@ -1,1 +1,1 @@
-wweb: flask db upgrade; flask translate compile; gunicorn microblog:app
+wweb: flask db upgrade; flask translate compile; gunicorn main:app
