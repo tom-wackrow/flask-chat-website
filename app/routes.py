@@ -1,6 +1,5 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login.utils import logout_user
-from flask_migrate import current
 from werkzeug.urls import url_parse
 from app import app
 from app.forms import EditProfileForm, LoginForm, RegistrationForm
@@ -8,7 +7,7 @@ from flask_login import current_user, login_user
 from app.models import User
 from flask_login import login_required
 from flask import request
-from app import db
+from app import db, socketio
 from datetime import datetime
 from app.models import Post
 from app.forms import PostForm
@@ -25,16 +24,7 @@ def index():
         db.session.commit()
         flash('Your post is now live!')
         return redirect(url_for('index'))
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
+    posts = Post.query.all()
     return render_template("index.html", title='Home Page', form=form,
                            posts=posts)
 
@@ -80,10 +70,7 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {"author": user, "body": "Test Post #1"},
-        {"author": user, "body": "Test Post #2"}
-    ]
+    posts = Post.query.all()[:5]
     return render_template("user.html", user=user, posts=posts)
 
 @app.before_request
@@ -106,3 +93,17 @@ def edit_profile():
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
     return render_template("edit_profile.html", title="Edit Profile", form=form)
+
+
+@app.route("/room", methods=["GET", "POST"])
+@login_required
+def room():
+    return render_template(url_for("room"))
+
+@socketio.on("message")
+def handle_message(json, methods=["GET", "POST"]):
+    print(f"Received Message {str(json)}")
+    socketio.emit("response", json, callback=messageRecieved)
+
+def messageRecieved():
+    print("Message Received")
