@@ -19,8 +19,9 @@
   var socket = io.connect('http://' + document.domain + ':' + location.port);
 
   socket.on('connect', function () {
-    socket.emit('my event', {
-      data: 'User Connected'
+    socket.emit("join", {
+      user_name: "{{ current_user.username }}",
+      message: 'connected'
     })
     var form = $('form').on('submit', function (e) {
       e.preventDefault()
@@ -29,14 +30,14 @@
       if (user_input == "") {
 
       }
-      socket.emit('my event', {
+      socket.emit('message', {
         user_name: user_name,
         message: user_input
       })
       $('input.message').val('').focus()
     })
   })
-  socket.on('my response', function (msg) {
+  socket.on('message', function (msg) {
     if (typeof msg.user_name !== 'undefined') {
       $('h3').remove()
       $('div.message_holder').append('<div><b style="color: #000">' + msg.user_name + '</b> ' + msg.message + '</div>')

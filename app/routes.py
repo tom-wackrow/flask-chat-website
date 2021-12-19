@@ -9,9 +9,9 @@ from flask_login import login_required
 from flask import request
 from app import db  
 from datetime import datetime
-from app.models import Post
-from app.forms import PostForm
-from wtforms import ValidationError
+from app.models import Post, Room
+from app.forms import PostForm, RoomForm
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -37,7 +37,8 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            raise ValidationError("Invalid Username or password")
+            flash("Invalid Username or Password!")
+            return redirect(url_for("login"))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != "":
@@ -104,3 +105,5 @@ def room():
         db.session.commit()
         return redirect(url_for("room"))
     return render_template("room.html")
+
+

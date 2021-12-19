@@ -1,10 +1,15 @@
-from app import app, db
 from app import socketio
+
 
 def messageReceived(methods=['GET', 'POST']):
     print('message was received!!!')
 
-@socketio.on('my event')
-def handle_my_custom_event(json, methods=['GET', 'POST']):
-    print('received my event: ' + str(json))
-    socketio.emit('my response', json, callback=messageReceived)
+@socketio.on("join")
+def handle_connect(json, methods=["GET", "POST"]):
+    print(f"<{json['user_name']}> {json['message']}")
+    socketio.emit("message", json)
+
+@socketio.on("message")
+def handle_message(json, methods=["GET", "POST"]):
+    print(f"<{json['user_name']}> {json['message']}")
+    socketio.emit('message', json, callback=messageReceived)

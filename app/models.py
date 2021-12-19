@@ -37,6 +37,8 @@ class Post(db.Model):
     def __repr__(self):
         return f"<Post {self.body}>"
 
+class Room(db.Model):
+    room_id = db.Column(db.Integer, primary_key=True)
 
 @login.user_loader
 def load_user(id):
