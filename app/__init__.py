@@ -8,6 +8,7 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
 from flask_socketio import SocketIO
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
@@ -17,7 +18,7 @@ login.login_view = "login"
 socketio = SocketIO(app)
 
 
-from app import routes, models, errors
+from app import room, routes, models, errors
 
 
 if not app.debug:
@@ -31,14 +32,14 @@ if not app.debug:
         mail_handler = SMTPHandler(
             mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
             fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-            toaddrs=app.config['ADMINS'], subject='Microblog Failure',
+            toaddrs=app.config['ADMINS'], subject='website Failure',
             credentials=auth, secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
     
     if not os.path.exists('logs'):
         os.mkdir('logs')
-    file_handler = RotatingFileHandler('logs/microblog.log', maxBytes=10240,
+    file_handler = RotatingFileHandler('logs/website.log', maxBytes=10240,
                                        backupCount=10)
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))

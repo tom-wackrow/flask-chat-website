@@ -7,7 +7,7 @@ from flask_login import current_user, login_user
 from app.models import User
 from flask_login import login_required
 from flask import request
-from app import db, socketio
+from app import db  
 from datetime import datetime
 from app.models import Post
 from app.forms import PostForm
@@ -98,12 +98,10 @@ def edit_profile():
 @app.route("/room", methods=["GET", "POST"])
 @login_required
 def room():
-    return render_template(url_for("room"))
-
-@socketio.on("message")
-def handle_message(json, methods=["GET", "POST"]):
-    print(f"Received Message {str(json)}")
-    socketio.emit("response", json, callback=messageRecieved)
-
-def messageRecieved():
-    print("Message Received")
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for("room"))
+    return render_template("room.html")
