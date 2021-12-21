@@ -49,6 +49,6 @@ class PostForm(FlaskForm):
         DataRequired(), Length(min=1, max=140)])
     submit = SubmitField('Submit')
 
-class RoomForm(Flask):
-    room_id = StringField("Room ID")
+class RoomForm(FlaskForm):
+    room_id = StringField("Room Name", validators=[DataRequired()])
     submit = SubmitField("Join/Create Room")

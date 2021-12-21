@@ -7,27 +7,21 @@ from flask_login import current_user, login_user
 from app.models import User
 from flask_login import login_required
 from flask import request
-from app import db  
+from app import db
 from datetime import datetime
-from app.models import Post, Room
-from app.forms import PostForm, RoomForm
+from app.models import Post
+from app.forms import RoomForm
 
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    form = PostForm()
+    form = RoomForm()
     if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live!')
-        return redirect(url_for('index'))
-    posts = Post.query.all()
-    return render_template("index.html", title='Home Page', form=form,
-                           posts=posts)
-
+        current_user.current_room = form.room_id.data
+        return redirect(url_for(f"room", room_id=current_user.current_room))
+    return render_template("index.html", title='Home Page', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -95,15 +89,7 @@ def edit_profile():
     return render_template("edit_profile.html", title="Edit Profile", form=form)
 
 
-@app.route("/room", methods=["GET", "POST"])
+@app.route("/room/<room_id>", methods=["GET", "POST"])
 @login_required
-def room():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for("room"))
-    return render_template("room.html")
-
-
+def room(room_id):
+    return render_template("room.html", room=room_id)

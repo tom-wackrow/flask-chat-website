@@ -1,15 +1,16 @@
 from app import socketio
+from flask_socketio import join_room, leave_room
+from flask_login import current_user
 
 
-def messageReceived(methods=['GET', 'POST']):
-    print('message was received!!!')
+@socketio.on('join', namespace='/room/<room_id>')
+def join(message):
+    room = current_user.current_room
+    join_room(room)
+    socketio.emit('status', {'message':  current_user.username + ' has entered the room.'}, room=room)
 
-@socketio.on("join")
-def handle_connect(json, methods=["GET", "POST"]):
-    print(f"<{json['user_name']}> {json['message']}")
-    socketio.emit("message", json)
 
-@socketio.on("message")
-def handle_message(json, methods=["GET", "POST"]):
-    print(f"<{json['user_name']}> {json['message']}")
-    socketio.emit('message', json, callback=messageReceived)
+@socketio.on('message', namespace='/room/<room_id>')
+def handle_message(message):
+    room = current_user.current_room
+    socketio.emit('message', {"user_name": current_user.username, 'message': current_user.username + ' : ' + message['message']}, room=room)

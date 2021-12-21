@@ -18,8 +18,9 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
-*.log
+logs/
 *.ini
 migrations/README
 migrations/script.py.mako
 logs/microblog.log.1
+__pycache__/

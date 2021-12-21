@@ -14,6 +14,7 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     posts = db.relationship("Post", backref="author", lazy="dynamic")
+    current_room = db.Column(db.String(64))
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -36,9 +37,6 @@ class Post(db.Model):
     
     def __repr__(self):
         return f"<Post {self.body}>"
-
-class Room(db.Model):
-    room_id = db.Column(db.Integer, primary_key=True)
 
 @login.user_loader
 def load_user(id):
