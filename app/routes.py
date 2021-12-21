@@ -95,4 +95,4 @@ def edit_profile():
 def room():
     username = current_user.username
     room = current_user.room
-    return render_template("old_room.html")
+    return render_template("room.html")
