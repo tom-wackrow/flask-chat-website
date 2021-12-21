@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login.utils import logout_user
+from flask_migrate import current
 from werkzeug.urls import url_parse
 from app import app
 from app.forms import EditProfileForm, LoginForm, RegistrationForm
@@ -19,8 +20,8 @@ from app.forms import RoomForm
 def index():
     form = RoomForm()
     if form.validate_on_submit():
-        current_user.current_room = form.room_id.data
-        return redirect(url_for(f"room", room_id=current_user.current_room))
+        current_user.room = form.room_id.data
+        return redirect(url_for("room"))
     return render_template("index.html", title='Home Page', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -89,7 +90,9 @@ def edit_profile():
     return render_template("edit_profile.html", title="Edit Profile", form=form)
 
 
-@app.route("/room/<room_id>", methods=["GET", "POST"])
+@app.route("/room", methods=["GET", "POST"])
 @login_required
-def room(room_id):
-    return render_template("room.html", room=room_id)
+def room():
+    username = current_user.username
+    room = current_user.room
+    return render_template("old_room.html")
