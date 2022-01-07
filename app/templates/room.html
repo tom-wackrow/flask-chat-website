@@ -4,19 +4,19 @@
 {% block content %}
 <div class="message_holder"></div>
 
-<form class="footer" action="" method="POST">
-  <input type="text" class="message" placeholder="Messages" />
-  <input type="submit", value="Send"/>
+<form action="" method="POST">
+  <input type="text" class="message" placeholder="Say Something..." />
+  <input type="submit" , value="Send" />
 </form>
 
-
-
-<script src="static/styles.css"></script>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.min.js"></script>
+<!-- <script src="{{ url_for('static', filename='room.js') }}"></script> -->
 <script type="text/javascript">
+  // var socket = io({transports: ['websocket'], upgrade: false}).connect('http://' + document.domain + ':' + location.port + '/room');
   var socket = io.connect('http://' + document.domain + ':' + location.port + '/room');
+
   const msgRegExp = "/^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/"
 
   socket.on('connect', function () {
@@ -29,7 +29,7 @@
       let user_name = "{{ current_user.username}}"
       let user_input = $('input.message').val()
       user_input = linkify(user_input)
-      
+
       socket.emit('message', {
         user_name: user_name,
         message: user_input
@@ -37,10 +37,11 @@
       $('input.message').val('').focus()
     })
   })
+  
   socket.on('message', function (msg) {
     if (typeof msg.user_name !== 'undefined') {
       $('h3').remove()
-      $('div.message_holder').append('<div><b style="color: #000">' + msg.user_name + '</b> ' + msg.message + '</div>')
+      $('div.message_holder').append('<div><b>' + msg.user_name + '</b> ' + msg.message + '</div>')
     }
   })
 
@@ -61,6 +62,6 @@
     replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
 
     return replacedText;
-}
+  }
 </script>
 {% endblock %}

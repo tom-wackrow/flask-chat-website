@@ -1,21 +1,22 @@
 <!doctype html>
 <html>
     <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         {% if title %}
-        <title>{{ title }} - Website</title>
+        <title>{{ title }}</title>
         {% else %}
-        <title>Website</title>
+        <title>Chat</title>
         {% endif %}
+
     </head>
     <body>
         <div>
-          Website:
-          <a href="{{ url_for('index') }}">Home</a>
+          <a class="navbar-item" href="{{ url_for('index') }}">Home</a>
           {% if current_user.is_anonymous %}
-          <a href="{{ url_for('login') }}">Login</a>
+          <a class="navbar-item" href="{{ url_for('login') }}">Login</a>
           {% else %}
-          <a href="{{ url_for('user', username=current_user.username) }}">Profile</a>
-          <a href="{{ url_for('logout') }}">Logout</a>
+          <a class="navbar-item" href="{{ url_for('user', username=current_user.username) }}">Profile</a>
+          <a class="navbar-item" href="{{ url_for('logout') }}">Logout</a>
           {% endif %}
         </div>
         <hr>

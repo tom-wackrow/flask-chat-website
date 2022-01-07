@@ -1,6 +1,5 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login.utils import logout_user
-from flask_migrate import current
 from werkzeug.urls import url_parse
 from app import app
 from app.forms import EditProfileForm, LoginForm, RegistrationForm
@@ -21,6 +20,7 @@ def index():
     form = RoomForm()
     if form.validate_on_submit():
         current_user.room = form.room_id.data
+        db.session.commit()
         return redirect(url_for("room"))
     return render_template("index.html", title='Home Page', form=form)
 
@@ -39,7 +39,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != "":
             next_page = url_for("index")
             return redirect(next_page)
-    return render_template("login.html", title="Sign In", form=form)
+    return render_template("login.html", title="Login", form=form)
 
 
 @app.route("/logout")
@@ -57,8 +57,8 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash("You have been registered!")
-        return redirect(url_for("login"))
+        login_user(user=user)
+        return redirect(url_for("index"))
     return render_template("register.html", title="Register", form=form)
 
 @app.route("/user/<username>")
@@ -95,4 +95,4 @@ def edit_profile():
 def room():
     username = current_user.username
     room = current_user.room
-    return render_template("room.html")
+    return render_template("room.html", title=f"Chat - {room}")

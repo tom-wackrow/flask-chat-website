@@ -14,3 +14,10 @@ def join(message):
 def handle_message(message):
     room = current_user.room
     socketio.emit("message", message, room=room, namespace="/room")
+
+@socketio.on("disconnect", namespace="/room")
+def disconnect(message):
+    room = current_user.room
+    leave_room(room)
+    current_user.room = None
+    disconnect()
