@@ -24,7 +24,7 @@ socket.on('connect', function () {
 socket.on('message', function (msg) {
     if (typeof msg.user_name !== 'undefined') {
         $('h3').remove()
-        $('div.message_holder').append('<div><b>' + msg.user_name + '</b> ' + msg.message + '</div>')
+        $('div.message_holder').append('<div><b>\<' + msg.user_name + '\></b> ' + msg.message + '</div>')
     }
 })
 

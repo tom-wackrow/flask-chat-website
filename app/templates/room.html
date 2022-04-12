@@ -2,14 +2,15 @@
 
 
 {% block content %}
-<div class="message_holder"></div>
+<div class="message_holder" style="margin-bottom: 35px;">
+</div>
 
-<form action="" method="POST">
+<form action="" class="input_message" method="POST">
   <input type="text" class="message" placeholder="Say Something..." />
   <input type="submit" , value="Send" />
 </form>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.min.js"></script>
 <!-- <script src="{{ url_for('static', filename='room.js') }}"></script> -->
