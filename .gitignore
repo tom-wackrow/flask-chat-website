@@ -24,3 +24,4 @@ migrations/README
 migrations/script.py.mako
 logs/microblog.log.1
 __pycache__/
+Other Stuff/
